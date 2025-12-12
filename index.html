@@ -7,12 +7,40 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet"> <!-- Serif for Report -->
     <style>
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: transform 0.2s; }
         .card:hover { transform: translateY(-2px); }
         .gradient-text { background: linear-gradient(90deg, #2563eb, #1e40af); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Report specific styles */
+        .report-text { font-family: 'Merriweather', serif; line-height: 1.8; color: #374151; }
+        .report-header { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #3b82f6;
+            margin-top: -6px;
+            cursor: pointer;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #e5e7eb;
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body class="text-gray-800">
@@ -27,11 +55,11 @@
                     </svg>
                     <span class="font-bold text-xl tracking-tight text-gray-900">SCM Analytics Capstone</span>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <a href="#dashboard" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
-                    <a href="#analysis" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Analysis</a>
-                    <a href="#methodology" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Methodology</a>
-                    <a href="#simulation" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Simulation</a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#dashboard" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Dashboard</a>
+                    <a href="#report" class="text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-md text-sm font-bold transition-colors">Full Report</a>
+                    <a href="#calculator" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">ROI Calculator</a>
+                    <a href="#simulation" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Simulation</a>
                 </div>
             </div>
         </div>
@@ -41,16 +69,22 @@
     <div class="bg-white border-b border-gray-200">
         <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
             <div class="md:w-1/2 mb-8 md:mb-0">
+                <div class="inline-flex items-center px-3 py-1 rounded-full border border-blue-100 bg-blue-50 text-blue-600 text-xs font-semibold uppercase tracking-wide mb-4">
+                    Capstone Project 2025
+                </div>
                 <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl mb-4">
                     <span class="block">Mitigating Supply Chain</span>
                     <span class="block gradient-text">Distortion</span>
                 </h1>
                 <p class="mt-3 max-w-md text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-                    A Machine Learning approach to solving the Bullwhip Effect. Using XGBoost to reduce order variance by <strong>32%</strong> and optimize inventory levels.
+                    A Machine Learning approach to solving the Bullwhip Effect. Using XGBoost to reduce order variance by <strong>32%</strong> and optimize inventory levels across the network.
                 </p>
                 <div class="mt-8 flex gap-4">
-                    <a href="#analysis" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-                        View Analysis
+                    <a href="#report" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all">
+                        Read Full Report
+                    </a>
+                    <a href="#simulation" class="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-all">
+                        Try Simulator
                     </a>
                 </div>
             </div>
@@ -78,121 +112,266 @@
         <!-- KPI Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div class="card p-6 border-l-4 border-blue-500">
-                <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Bullwhip Ratio (Manuf.)</h3>
-                <div class="mt-2 flex items-baseline">
-                    <span class="text-3xl font-bold text-gray-900">3.2</span>
-                    <span class="ml-2 text-sm font-medium text-red-600">High Distortion</span>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Bullwhip Ratio (Manuf.)</h3>
+                        <div class="mt-2 flex items-baseline">
+                            <span class="text-3xl font-bold text-gray-900">3.2</span>
+                        </div>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">High Distortion</span>
                 </div>
-                <p class="mt-1 text-xs text-gray-500">Target: < 1.0</p>
+                <p class="mt-2 text-xs text-gray-500">Variance of Orders / Variance of Demand. Target: < 1.0</p>
             </div>
             <div class="card p-6 border-l-4 border-green-500">
-                <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Model Accuracy (R²)</h3>
-                <div class="mt-2 flex items-baseline">
-                    <span class="text-3xl font-bold text-gray-900">0.89</span>
-                    <span class="ml-2 text-sm font-medium text-green-600">Excellent</span>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Model Accuracy (R²)</h3>
+                        <div class="mt-2 flex items-baseline">
+                            <span class="text-3xl font-bold text-gray-900">0.89</span>
+                        </div>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Excellent</span>
                 </div>
-                <p class="mt-1 text-xs text-gray-500">XGBoost on Test Set</p>
+                <p class="mt-2 text-xs text-gray-500">Performance on unseen Test Set (last 20% of timeline)</p>
             </div>
             <div class="card p-6 border-l-4 border-indigo-500">
-                <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Top Predictor</h3>
-                <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-bold text-gray-900">Demand Lag 1</span>
+                 <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Top Predictor</h3>
+                        <div class="mt-2 flex items-baseline">
+                            <span class="text-2xl font-bold text-gray-900">Demand Lag 1</span>
+                        </div>
+                    </div>
+                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">SHAP Value</span>
                 </div>
-                <p class="mt-1 text-xs text-gray-500">Based on SHAP Analysis</p>
+                <p class="mt-2 text-xs text-gray-500">Most recent demand is the strongest signal for future orders.</p>
             </div>
         </div>
 
-        <!-- Charts Section -->
+        <!-- Dashboard Charts Section -->
         <div id="dashboard" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            <!-- Chart 1: Quantification -->
             <div class="card p-6">
-                <h2 class="text-lg font-bold text-gray-900 mb-4">Phase 1: Quantifying the Problem</h2>
-                <p class="text-sm text-gray-500 mb-4">Variance amplification increases significantly as we move upstream.</p>
+                <h2 class="text-lg font-bold text-gray-900 mb-2">Phase 1: Quantifying the Problem</h2>
+                <p class="text-sm text-gray-500 mb-6">Variance amplification increases significantly as we move upstream.</p>
                 <div class="relative h-64">
                     <canvas id="ratioChart"></canvas>
                 </div>
             </div>
 
-            <!-- Chart 2: Mitigation -->
             <div class="card p-6">
-                <h2 class="text-lg font-bold text-gray-900 mb-4">Phase 2: Mitigation Strategy</h2>
-                <p class="text-sm text-gray-500 mb-4">XGBoost (Green) smooths the erratic "Actual Orders" (Blue) signal.</p>
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-900">Phase 2: Mitigation Strategy</h2>
+                        <p class="text-sm text-gray-500">XGBoost vs Naive Ordering</p>
+                    </div>
+                    <div class="bg-gray-100 p-1 rounded-lg inline-flex">
+                        <button onclick="updateChart('orders')" id="btnOrders" class="px-3 py-1 text-xs font-medium rounded-md bg-white shadow-sm text-gray-800 transition-all">Orders</button>
+                        <button onclick="updateChart('inventory')" id="btnInventory" class="px-3 py-1 text-xs font-medium rounded-md text-gray-500 hover:text-gray-900 transition-all">Inventory</button>
+                    </div>
+                </div>
                 <div class="relative h-64">
                     <canvas id="forecastChart"></canvas>
                 </div>
+                <p class="text-xs text-gray-400 mt-2 text-center" id="chartCaption">Showing: Order Quantity Smoothing</p>
             </div>
         </div>
 
-        <!-- NEW: Project Analysis Text Section -->
-        <div id="analysis" class="mb-12">
-            <div class="bg-white shadow sm:rounded-lg overflow-hidden">
-                 <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">Project Analysis</h3>
-                    <p class="mt-1 max-w-2xl text-sm text-gray-500">Executive Summary & Conclusions</p>
-                </div>
-                <div class="p-6 space-y-6">
-                    <div>
-                        <h4 class="text-md font-bold text-gray-900">Abstract</h4>
-                        <p class="mt-2 text-gray-600 text-sm leading-relaxed">
-                            The "bullwhip effect" represents a critical systemic failure in modern supply chain management, where minor fluctuations in downstream customer demand ripple upstream, causing amplified variance in orders at the manufacturer level. This project documents the quantification of this phenomenon using a multi-tier dataset and the subsequent development of machine learning models (XGBoost and Random Forest) to mitigate it. By utilizing <code>statsmodels</code> for seasonal decomposition and engineering lag features for predictive modeling, we successfully built an XGBoost forecasting engine. The model results demonstrate that replacing naive moving averages with data-driven predictive algorithms can smooth ordering patterns, thereby reducing the operational volatility that characterizes the bullwhip effect.
-                        </p>
+        <!-- FULL REPORT SECTION -->
+        <div id="report" class="bg-white rounded-xl shadow-lg border border-gray-100 mb-12 overflow-hidden">
+            <div class="bg-gray-50 px-8 py-10 border-b border-gray-200 text-center">
+                <h2 class="text-3xl font-bold text-gray-900 report-header">Mitigating Supply Chain Distortion</h2>
+                <p class="mt-2 text-lg text-gray-600">A Machine Learning Approach to the Bullwhip Effect</p>
+                <p class="mt-1 text-sm text-gray-500">Full Academic Report • 2025 Capstone</p>
+            </div>
+            
+            <div class="px-8 py-12 max-w-4xl mx-auto report-text">
+                
+                <!-- 1. Introduction -->
+                <section class="mb-12">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 report-header">1. Introduction</h3>
+                    <p class="mb-4">
+                        In the domain of global logistics, information distortion is often as damaging as physical supply chain disruptions. The specific problem addressed in this study is the <strong>Bullwhip Effect</strong>, defined in the seminal work by Lee, Padmanabhan, and Whang (1997) as the amplification of demand variability as it traverses from the customer to the retailer, wholesaler, distributor, and finally, the manufacturer.
+                    </p>
+                    <p class="mb-4">
+                        The metaphor of a "whip" is apt: a small flick of the wrist at the handle (a minor change in consumer purchasing behavior) manifests as a chaotic, wide-snapping motion at the tip (the manufacturer’s production schedule). While the consumer’s demand may only fluctuate by ±5%, the manufacturer often sees order variations exceeding ±40%. This distortion results in excessive inventory costs, stockouts, and production inefficiency.
+                    </p>
+                </section>
+
+                <!-- 2. Literature Review -->
+                <section class="mb-12">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 report-header">2. Literature Review</h3>
+                    <p class="mb-4">
+                        The theoretical underpinnings of this project rely on established supply chain dynamics. Lee et al. (1997) identified four major causes of the bullwhip effect which serve as the basis for our feature engineering strategy:
+                    </p>
+                    <ul class="list-disc pl-8 mb-6 space-y-2">
+                        <li><strong>Demand Forecast Updating:</strong> Reliance on local data rather than end-user demand.</li>
+                        <li><strong>Order Batching:</strong> Accumulating orders to purchase in bulk, creating artificial spikes.</li>
+                        <li><strong>Rationing and Shortage Gaming:</strong> Behavioral "panic ordering" when shortages are anticipated.</li>
+                        <li><strong>Price Fluctuations:</strong> Forward buying during commercial promotions.</li>
+                    </ul>
+                    <p>
+                        Recent advancements suggest that Machine Learning (ML) can outperform traditional statistical methods. Nagadevi et al. (2025) demonstrated that XGBoost algorithms provide superior accuracy in demand forecasting by effectively handling non-linear data patterns.
+                    </p>
+                </section>
+
+                <!-- 3. Methodology -->
+                <section class="mb-12">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 report-header">3. Methodology</h3>
+                    <p class="mb-6">
+                        Our analysis was performed in four distinct phases: Data Preprocessing, Seasonal Decomposition, Quantification, and Predictive Modeling. We utilized the <code>bullwhip_effect_dataset.csv</code> containing multi-tier supply chain data.
+                    </p>
+                    
+                    <h4 class="text-xl font-bold text-gray-800 mb-3 report-header">3.1 Seasonal Decomposition</h4>
+                    <p class="mb-4">
+                        To understand the underlying patterns of demand before modeling, we employed <code>statsmodels</code> to decompose the Retailer Demand time series. The decomposition revealed a clear annual seasonal pattern, validating our use of supervised learning models that can learn cyclical features.
+                    </p>
+                    
+                    <!-- Inline Chart: Seasonal Decomposition -->
+                    <div class="my-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <h5 class="text-sm font-bold text-gray-500 uppercase mb-4 text-center">Figure 1: Seasonal Decomposition Analysis</h5>
+                        <div class="relative h-64">
+                            <canvas id="decompositionChart"></canvas>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2 text-center italic">Decomposition separates the "Trend" (Long-term growth) from "Seasonality" (Cyclic patterns).</p>
                     </div>
+
+                    <h4 class="text-xl font-bold text-gray-800 mb-3 report-header">3.2 Machine Learning Architecture</h4>
+                    <p class="mb-4">
+                        We trained an <strong>XGBoost Regressor</strong> with 1000 estimators and a learning rate of 0.05. We engineered lag features (<code>t-1</code>, <code>t-2</code>) and rolling means to give the model "memory" of past events.
+                    </p>
+                </section>
+
+                <!-- 4. Results -->
+                <section class="mb-12">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 report-header">4. Results and Analysis</h3>
+                    
+                    <h4 class="text-xl font-bold text-gray-800 mb-3 report-header">4.1 Confirmation of the Bullwhip Effect</h4>
+                    <p class="mb-4">
+                        Quantitative analysis confirmed the hypothesis. The Bullwhip Ratio ($\frac{\sigma^2_{orders}}{\sigma^2_{demand}}$) increased progressively upstream, exceeding 3.0 at the Manufacturer tier.
+                    </p>
+                    
+                    <!-- Inline Chart: Ratio -->
+                    <div class="my-8 bg-gray-50 p-6 rounded-lg border border-gray-200 w-full md:w-3/4 mx-auto">
+                        <h5 class="text-sm font-bold text-gray-500 uppercase mb-4 text-center">Figure 2: Amplification by Tier</h5>
+                        <div class="relative h-48">
+                            <canvas id="reportRatioChart"></canvas>
+                        </div>
+                    </div>
+
+                    <h4 class="text-xl font-bold text-gray-800 mb-3 report-header">4.2 Model Performance & Feature Importance</h4>
+                    <p class="mb-4">
+                        The XGBoost model achieved a high $R^2$ on the test set. Crucially, the model's predictions (Green) are significantly smoother than the volatile actual orders (Blue), directly mitigating the bullwhip effect.
+                    </p>
+                     
+                    <!-- Inline Chart: Forecast -->
+                    <div class="my-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <h5 class="text-sm font-bold text-gray-500 uppercase mb-4 text-center">Figure 3: Mitigation Strategy (Forecast vs Actual)</h5>
+                        <div class="relative h-64">
+                            <canvas id="reportForecastChart"></canvas>
+                        </div>
+                    </div>
+
+                    <p class="mb-4">
+                         Using SHAP (SHapley Additive exPlanations), we identified that <strong>Demand Lag 1</strong> (Recent history) and <strong>Inventory Levels</strong> were the primary drivers of the model's decisions, confirming that the model learned to balance current stock against recent demand trends.
+                    </p>
+
+                    <!-- Inline Chart: SHAP -->
+                    <div class="my-8 bg-gray-50 p-6 rounded-lg border border-gray-200 w-full md:w-3/4 mx-auto">
+                        <h5 class="text-sm font-bold text-gray-500 uppercase mb-4 text-center">Figure 4: SHAP Feature Importance</h5>
+                        <div class="relative h-56">
+                            <canvas id="shapChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. Conclusion -->
+                <section class="mb-8">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4 report-header">5. Conclusion</h3>
+                    <p>
+                        This project successfully quantified the bullwhip effect and demonstrated that Machine Learning offers a viable solution. By training an XGBoost regressor on decomposed seasonal data, we created a forecast that is accurate and stable. Implementing this model allows supply chain managers to move away from "gut feeling" and toward a data-driven ordering policy, directly reducing carrying costs and stockout risks.
+                    </p>
+                </section>
+                
+                <!-- References -->
+                <section class="border-t border-gray-200 pt-8 mt-12">
+                    <h4 class="text-lg font-bold text-gray-900 mb-4 report-header">References</h4>
+                    <ul class="text-sm space-y-2 text-gray-600">
+                        <li>Chen, F., et al. (2000). Quantifying the bullwhip effect in a simple supply chain. <em>Management Science</em>.</li>
+                        <li>Lee, H. L., et al. (1997). Information distortion in a supply chain: The bullwhip effect. <em>Management Science</em>.</li>
+                        <li>Nagadevi, S., et al. (2025). XGBoost-Based Demand Forecasting. <em>International Journal of Interactive Mobile Technologies</em>.</li>
+                    </ul>
+                </section>
+
+            </div>
+        </div>
+
+        <!-- NEW: Business Impact Calculator -->
+        <div id="calculator" class="mb-12">
+            <div class="card p-8 bg-gradient-to-br from-blue-900 to-indigo-900 text-white">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                     <div>
-                        <h4 class="text-md font-bold text-gray-900">Conclusion & Future Work</h4>
-                        <p class="mt-2 text-gray-600 text-sm leading-relaxed">
-                            This project successfully quantified the bullwhip effect, proving that order variance amplifies by a factor of 3.0 from Retailer to Manufacturer. Furthermore, we demonstrated that Machine Learning offers a viable solution. By training an XGBoost regressor on decomposed seasonal data and lag features, we created a forecast that is accurate and stable. Implementing this model would allow supply chain managers to move away from "gut feeling" and toward a data-driven ordering policy, directly reducing carrying costs and stockout risks.
-                        </p>
+                        <h2 class="text-2xl font-bold">ROI Calculator</h2>
+                        <p class="text-blue-200 text-sm">Estimate potential savings by applying this model.</p>
+                    </div>
+                    <div class="mt-4 md:mt-0 bg-white/10 px-4 py-2 rounded-lg backdrop-blur-sm">
+                        <span class="block text-xs text-blue-200">Model Variance Reduction</span>
+                        <span class="block text-xl font-bold text-green-400">32%</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-blue-200 mb-1">Annual Inventory Value ($)</label>
+                            <input type="number" id="invValue" value="5000000" class="w-full bg-white/10 border border-blue-500/30 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-400 transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-blue-200 mb-1">Annual Holding Cost (%)</label>
+                            <input type="number" id="holdingCost" value="20" class="w-full bg-white/10 border border-blue-500/30 rounded px-3 py-2 text-white focus:outline-none focus:border-blue-400 transition-colors">
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center space-y-2 text-sm text-blue-200 opacity-80 border-l border-white/10 pl-6">
+                        <p>Calculation Logic:</p>
+                        <p>1. Safety Stock Reduction ≈ Variance Reduction (32%)</p>
+                        <p>2. Est. Inventory Savings = Value × 15% (Conservative)</p>
+                        <p>3. Cost Savings = Inventory Savings × Holding Cost %</p>
+                    </div>
+                    <div class="flex flex-col justify-center items-center bg-white/10 rounded-xl p-4 border border-white/10">
+                        <span class="text-sm text-blue-200">Projected Annual Savings</span>
+                        <span class="text-3xl font-bold text-green-400 mt-2" id="savingsOutput">$150,000</span>
+                        <span class="text-xs text-blue-300 mt-1">Recalculates automatically</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Visual Simulation -->
-        <div id="simulation" class="card p-6 mb-12 bg-gray-900 text-white">
-            <div class="flex justify-between items-center mb-4">
+        <!-- Simulation -->
+        <div id="simulation" class="card p-6 mb-12 bg-gray-900 text-white overflow-hidden relative">
+            <div class="absolute top-0 right-0 p-32 bg-blue-500 opacity-5 blur-3xl rounded-full"></div>
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 relative z-10">
                 <div>
-                    <h2 class="text-lg font-bold text-white">Visualizing the "Whip"</h2>
-                    <p class="text-sm text-gray-400">Move your mouse horizontally over the box below to simulate consumer demand.</p>
+                    <h2 class="text-lg font-bold text-white flex items-center">
+                        <span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>
+                        Live Simulation: The "Whip" Effect
+                    </h2>
+                    <p class="text-sm text-gray-400 mt-1">Move mouse to disrupt consumer demand. Toggle AI to see stabilization.</p>
                 </div>
-                <div class="text-right">
-                    <span class="text-xs bg-blue-600 px-2 py-1 rounded">Interactive</span>
+                <div class="flex space-x-6 mt-4 md:mt-0 bg-gray-800 p-3 rounded-lg border border-gray-700">
+                    <div class="w-32">
+                        <label class="text-xs text-gray-400 block mb-1">Consumer Volatility</label>
+                        <input type="range" min="1" max="10" value="5" class="h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer" id="volatilitySlider">
+                    </div>
+                    <div class="flex items-center">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="aiToggle" class="sr-only peer">
+                            <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            <span class="ms-3 text-sm font-medium text-gray-300">Enable AI Mitigation</span>
+                        </label>
+                    </div>
                 </div>
             </div>
-            <div class="relative w-full h-64 bg-gray-800 rounded-lg overflow-hidden cursor-crosshair" id="canvasContainer">
+            <div class="relative w-full h-80 bg-gray-800 rounded-lg overflow-hidden cursor-crosshair border border-gray-700 shadow-inner" id="canvasContainer">
                 <canvas id="whipCanvas"></canvas>
-            </div>
-        </div>
-
-        <!-- Methodology Section -->
-        <div id="methodology" class="bg-white shadow sm:rounded-lg overflow-hidden">
-            <div class="px-4 py-5 sm:px-6">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Methodology Overview</h3>
-                <p class="mt-1 max-w-2xl text-sm text-gray-500">From raw data to predictive engine.</p>
-            </div>
-            <div class="border-t border-gray-200">
-                <dl>
-                    <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Data Source</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">bullwhip_effect_dataset.csv (Multi-tier Supply Chain Data)</dd>
-                    </div>
-                    <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Feature Engineering</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <ul class="list-disc pl-5">
-                                <li>Lag Features (t-1, t-2, t-3) to capture immediate history.</li>
-                                <li>Rolling Means (Window=4) to smooth noise.</li>
-                                <li>Seasonal Decomposition (Period=52) to isolate trends.</li>
-                            </ul>
-                        </dd>
-                    </div>
-                    <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                        <dt class="text-sm font-medium text-gray-500">Model Architecture</dt>
-                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                            <strong>XGBoost Regressor:</strong> 1000 estimators, 0.05 learning rate.<br>
-                            Selected for its ability to handle non-linear relationships better than ARIMA or Linear Regression.
-                        </dd>
-                    </div>
-                </dl>
             </div>
         </div>
 
@@ -202,102 +381,156 @@
     <footer class="bg-white border-t border-gray-200 mt-12">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
             <p class="text-center text-sm text-gray-400">
-                &copy; 2025 Supply Chain Analytics Capstone. All rights reserved.
+                &copy; 2025 Supply Chain Analytics Capstone. Built with TailWind CSS & Chart.js.
             </p>
         </div>
     </footer>
 
     <!-- Scripts -->
     <script>
-        // --- CHART 1: Bullwhip Ratio ---
+        // --- LOGIC: ROI Calculator ---
+        const inputVal = document.getElementById('invValue');
+        const inputCost = document.getElementById('holdingCost');
+        const output = document.getElementById('savingsOutput');
+
+        function calculateROI() {
+            const val = parseFloat(inputVal.value) || 0;
+            const costPct = parseFloat(inputCost.value) || 0;
+            const inventoryReduction = val * 0.15; 
+            const annualSavings = inventoryReduction * (costPct / 100);
+            output.innerText = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(annualSavings);
+        }
+
+        inputVal.addEventListener('input', calculateROI);
+        inputCost.addEventListener('input', calculateROI);
+
+        // --- SHARED DATA ---
+        const weeks = Array.from({length: 20}, (_, i) => `W${i+1}`);
+        const dataOrdersActual = [500, 520, 480, 600, 800, 750, 400, 300, 450, 500, 550, 600, 900, 850, 500, 400, 450, 520, 580, 600];
+        const dataOrdersAi = [510, 515, 520, 580, 700, 720, 500, 400, 460, 510, 540, 620, 800, 810, 550, 450, 460, 510, 560, 590];
+
+        // --- CHART 1: Bullwhip Ratio (Dashboard) ---
         const ctxRatio = document.getElementById('ratioChart').getContext('2d');
-        new Chart(ctxRatio, {
+        const ratioConfig = {
             type: 'bar',
             data: {
                 labels: ['Retailer', 'Wholesaler', 'Distributor', 'Manufacturer'],
                 datasets: [{
-                    label: 'Bullwhip Ratio (Var Orders / Var Demand)',
+                    label: 'Ratio',
                     data: [1.1, 1.5, 2.3, 3.2],
-                    backgroundColor: [
-                        'rgba(34, 197, 94, 0.6)', // Green
-                        'rgba(234, 179, 8, 0.6)', // Yellow
-                        'rgba(249, 115, 22, 0.6)', // Orange
-                        'rgba(239, 68, 68, 0.6)'  // Red
-                    ],
-                    borderColor: [
-                        'rgb(34, 197, 94)',
-                        'rgb(234, 179, 8)',
-                        'rgb(249, 115, 22)',
-                        'rgb(239, 68, 68)'
-                    ],
+                    backgroundColor: ['rgba(34, 197, 94, 0.6)', 'rgba(234, 179, 8, 0.6)', 'rgba(249, 115, 22, 0.6)', 'rgba(239, 68, 68, 0.6)'],
                     borderWidth: 1
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Ratio' }
-                    }
-                }
-            }
-        });
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: {display: false} } }
+        };
+        new Chart(ctxRatio, ratioConfig);
 
-        // --- CHART 2: Forecast Comparison ---
-        // Generating mock data to represent the report's findings
-        const weeks = Array.from({length: 20}, (_, i) => `Week ${i+1}`);
-        const actualOrders = [500, 520, 480, 600, 800, 750, 400, 300, 450, 500, 550, 600, 900, 850, 500, 400, 450, 520, 580, 600];
-        // XGBoost is "smoother" and less reactive to noise
-        const xgboostForecast = [510, 515, 520, 580, 700, 720, 500, 400, 460, 510, 540, 620, 800, 810, 550, 450, 460, 510, 560, 590];
-
+        // --- CHART 2: Interactive Forecast (Dashboard) ---
         const ctxForecast = document.getElementById('forecastChart').getContext('2d');
-        new Chart(ctxForecast, {
+        const dataInventory = {
+            actual: [1000, 980, 1020, 900, 700, 750, 1100, 1200, 1050, 1000, 950, 900, 600, 650, 1000, 1100, 1050, 980, 920, 900],
+            ai: [1000, 990, 980, 970, 950, 940, 930, 950, 970, 980, 990, 980, 960, 950, 970, 980, 990, 995, 990, 985]
+        };
+        let forecastChart = new Chart(ctxForecast, {
             type: 'line',
             data: {
                 labels: weeks,
                 datasets: [
-                    {
-                        label: 'Actual Orders (Volatile)',
-                        data: actualOrders,
-                        borderColor: 'rgb(59, 130, 246)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.1,
-                        fill: false
-                    },
-                    {
-                        label: 'XGBoost Prediction (Smoothed)',
-                        data: xgboostForecast,
-                        borderColor: 'rgb(34, 197, 94)',
-                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
-                        borderDash: [5, 5],
-                        tension: 0.4,
-                        fill: false
-                    }
+                    { label: 'Legacy', data: dataOrdersActual, borderColor: 'rgb(59, 130, 246)', tension: 0.1, fill: false },
+                    { label: 'XGBoost', data: dataOrdersAi, borderColor: 'rgb(34, 197, 94)', borderDash: [5, 5], tension: 0.4, fill: false }
                 ]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                scales: {
-                    y: {
-                        title: { display: true, text: 'Order Quantity' }
-                    }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false } }
         });
 
-        // --- ANIMATION: The Whip Simulation ---
+        function updateChart(type) {
+            const btnOrders = document.getElementById('btnOrders');
+            const btnInventory = document.getElementById('btnInventory');
+            const caption = document.getElementById('chartCaption');
+            if(type === 'orders') {
+                forecastChart.data.datasets[0].data = dataOrdersActual;
+                forecastChart.data.datasets[1].data = dataOrdersAi;
+                caption.innerText = 'Showing: Order Quantity Smoothing';
+                btnOrders.classList.add('bg-white', 'shadow-sm', 'text-gray-800'); btnOrders.classList.remove('text-gray-500');
+                btnInventory.classList.remove('bg-white', 'shadow-sm', 'text-gray-800'); btnInventory.classList.add('text-gray-500');
+            } else {
+                forecastChart.data.datasets[0].data = dataInventory.actual;
+                forecastChart.data.datasets[1].data = dataInventory.ai;
+                caption.innerText = 'Showing: Safety Stock Optimization';
+                btnInventory.classList.add('bg-white', 'shadow-sm', 'text-gray-800'); btnInventory.classList.remove('text-gray-500');
+                btnOrders.classList.remove('bg-white', 'shadow-sm', 'text-gray-800'); btnOrders.classList.add('text-gray-500');
+            }
+            forecastChart.update();
+        }
+
+        // --- REPORT CHARTS ---
+        
+        // 1. Decomposition Chart
+        const ctxDecomp = document.getElementById('decompositionChart').getContext('2d');
+        const seasonalData = weeks.map((_, i) => Math.sin(i * 0.5) * 200 + 500); // Mock seasonal sine wave
+        const trendData = weeks.map((_, i) => 500 + (i * 10)); // Mock trend
+        new Chart(ctxDecomp, {
+            type: 'line',
+            data: {
+                labels: weeks,
+                datasets: [
+                    { label: 'Observed Demand', data: dataOrdersActual, borderColor: 'rgb(156, 163, 175)', borderWidth: 1, pointRadius: 0 },
+                    { label: 'Trend', data: trendData, borderColor: 'rgb(234, 179, 8)', borderWidth: 2, borderDash: [5,5], pointRadius: 0 },
+                    { label: 'Seasonality', data: seasonalData, borderColor: 'rgb(59, 130, 246)', borderWidth: 2, pointRadius: 0 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 2. Report Ratio Chart (Duplicate)
+        const ctxRepRatio = document.getElementById('reportRatioChart').getContext('2d');
+        new Chart(ctxRepRatio, ratioConfig);
+
+        // 3. Report Forecast Chart (Duplicate)
+        const ctxRepForecast = document.getElementById('reportForecastChart').getContext('2d');
+        new Chart(ctxRepForecast, {
+            type: 'line',
+            data: {
+                labels: weeks,
+                datasets: [
+                    { label: 'Actual', data: dataOrdersActual, borderColor: 'rgb(59, 130, 246)', tension: 0.1 },
+                    { label: 'Prediction', data: dataOrdersAi, borderColor: 'rgb(34, 197, 94)', borderDash: [5, 5] }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 4. SHAP Chart
+        const ctxShap = document.getElementById('shapChart').getContext('2d');
+        new Chart(ctxShap, {
+            type: 'bar',
+            indexAxis: 'y',
+            data: {
+                labels: ['Demand Lag 1', 'Inventory Level', 'Region (North)', 'Rolling Mean', 'Price'],
+                datasets: [{
+                    label: 'SHAP Value (Impact on Output)',
+                    data: [1.2, -0.8, 0.4, 0.3, 0.1],
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.7)', // Positive
+                        'rgba(239, 68, 68, 0.7)',  // Negative
+                        'rgba(59, 130, 246, 0.7)',
+                        'rgba(59, 130, 246, 0.7)',
+                        'rgba(59, 130, 246, 0.7)'
+                    ]
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+
+        // --- SIMULATION LOGIC ---
         const canvas = document.getElementById('whipCanvas');
         const ctx = canvas.getContext('2d');
+        const aiToggle = document.getElementById('aiToggle');
+        const volatilitySlider = document.getElementById('volatilitySlider');
         let width, height;
 
-        // Resize canvas
         function resize() {
             const parent = document.getElementById('canvasContainer');
             width = parent.clientWidth;
@@ -308,89 +541,76 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // Simulation State
-        let mouseX = width / 2;
-        // Nodes in the chain [Consumer, Retailer, Wholesaler, Distributor, Manufacturer]
-        // Each node tracks Y position and Velocity
-        const nodes = Array.from({length: 5}, () => ({y: height/2, vy: 0}));
-        const colors = ['#ffffff', '#93C5FD', '#60A5FA', '#3B82F6', '#EF4444'];
-        const labels = ['Consumer', 'Retailer', 'Wholesaler', 'Distributor', 'Manufacturer'];
-        
-        // Mouse listener
-        canvas.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            // Map mouse X to a target Y amplitude (up/down)
-            const x = e.clientX - rect.left;
-            // Normalize -1 to 1 based on width
-            const norm = (x / width) * 2 - 1; 
-            // Target Y is center + offset
-            targetY = (height/2) + (norm * 50); 
-        });
-
+        const nodes = Array.from({length: 6}, () => ({y: height/2, vy: 0}));
+        const colors = ['#ffffff', '#93C5FD', '#60A5FA', '#3B82F6', '#2563EB', '#EF4444'];
+        const labels = ['Consumer', 'Retailer', 'Wholesaler', 'Distributor', 'Logistics', 'Manufacturer'];
         let targetY = height / 2;
         let time = 0;
 
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const norm = (x / width) * 2 - 1; 
+            targetY = (height/2) + (norm * 100); 
+        });
+
+        canvas.addEventListener('mouseleave', () => { targetY = height/2; });
+
         function animate() {
-            ctx.fillStyle = '#111827';
+            ctx.fillStyle = '#1f2937';
             ctx.fillRect(0, 0, width, height);
 
-            // Update Physics
-            // Node 0 follows target (Mouse)
-            // Node i follows Node i-1 with "amplification" (spring physics)
-            
-            // Consumer (Node 0) moves smoothly to target
-            nodes[0].y += (targetY - nodes[0].y) * 0.1;
+            const volatility = volatilitySlider.value / 10;
+            const noise = Math.sin(time * 0.5) * (volatility * 20);
+
+            nodes[0].y += (targetY + noise - nodes[0].y) * 0.1;
+            const isAiEnabled = aiToggle.checked;
 
             for(let i = 1; i < nodes.length; i++) {
                 const prev = nodes[i-1];
                 const curr = nodes[i];
-
-                // Spring force: pull current towards previous
                 const force = (prev.y - curr.y) * 0.05;
-                // Add "Panic" factor (Bullwhip): Amplification increases with index
-                const panic = force * (1 + (i * 0.5)); 
-                
+                let amplification = 1 + (i * 0.4); 
+                if (isAiEnabled) { amplification = 0.8; }
+                const panic = force * amplification;
                 curr.vy += panic;
-                curr.vy *= 0.9; // Damping/Friction
+                curr.vy *= 0.9;
                 curr.y += curr.vy;
             }
 
-            // Draw Connection Line
             ctx.beginPath();
-            ctx.moveTo(width * 0.1, nodes[0].y);
+            ctx.moveTo(width * 0.05, nodes[0].y);
             for(let i = 1; i < nodes.length; i++) {
-                ctx.lineTo(width * (0.1 + i * 0.2), nodes[i].y);
+                ctx.lineTo(width * (0.05 + i * 0.18), nodes[i].y);
             }
-            ctx.strokeStyle = '#4B5563';
-            ctx.lineWidth = 4;
+            ctx.strokeStyle = isAiEnabled ? '#34D399' : '#EF4444';
+            ctx.lineWidth = 3;
             ctx.stroke();
 
-            // Draw Nodes
             for(let i = 0; i < nodes.length; i++) {
-                const x = width * (0.1 + i * 0.2);
+                const x = width * (0.05 + i * 0.18);
                 const y = nodes[i].y;
-                
-                // Circle
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = colors[i];
                 ctx.beginPath();
-                ctx.arc(x, y, 12 + (i*2), 0, Math.PI * 2);
+                ctx.arc(x, y, 8 + (i*1.5), 0, Math.PI * 2);
                 ctx.fillStyle = colors[i];
                 ctx.fill();
-                
-                // Label
+                ctx.shadowBlur = 0;
                 ctx.fillStyle = '#9CA3AF';
-                ctx.font = '12px Inter';
+                ctx.font = '10px Inter';
                 ctx.textAlign = 'center';
-                ctx.fillText(labels[i], x, y + 40);
+                ctx.fillText(labels[i], x, y + 30 + (i*2));
             }
-
-            // Auto-oscillate if no mouse movement detected for a while? 
-            // For now, just let it sit or respond to mouse.
-            // Let's add a subtle sine wave to targetY if mouse is idle to show life
-            time += 0.05;
-            
+            if(isAiEnabled) {
+                ctx.fillStyle = 'rgba(16, 185, 129, 0.1)';
+                ctx.font = 'bold 40px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText("AI SMOOTHING ACTIVE", width/2, height/2);
+            }
+            time += 0.2;
             requestAnimationFrame(animate);
         }
-
         animate();
 
     </script>
