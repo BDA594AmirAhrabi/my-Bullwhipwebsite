@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain Analytics: Mitigating the Bullwhip Effect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); }
+        .gradient-text { background: linear-gradient(90deg, #2563eb, #1e40af); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <svg class="h-8 w-8 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="font-bold text-xl tracking-tight text-gray-900">SCM Analytics Capstone</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="#dashboard" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                    <a href="#analysis" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Analysis</a>
+                    <a href="#methodology" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Methodology</a>
+                    <a href="#simulation" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Simulation</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-8 md:mb-0">
+                <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl mb-4">
+                    <span class="block">Mitigating Supply Chain</span>
+                    <span class="block gradient-text">Distortion</span>
+                </h1>
+                <p class="mt-3 max-w-md text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+                    A Machine Learning approach to solving the Bullwhip Effect. Using XGBoost to reduce order variance by <strong>32%</strong> and optimize inventory levels.
+                </p>
+                <div class="mt-8 flex gap-4">
+                    <a href="#analysis" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        View Analysis
+                    </a>
+                </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center">
+                <!-- Abstract Representation SVG -->
+                <svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="20" y="240" width="40" height="40" rx="8" fill="#93C5FD" />
+                    <rect x="120" y="200" width="40" height="80" rx="8" fill="#60A5FA" />
+                    <rect x="220" y="160" width="40" height="120" rx="8" fill="#3B82F6" />
+                    <rect x="320" y="100" width="40" height="180" rx="8" fill="#1D4ED8" />
+                    <path d="M40 230 C 140 230, 140 190, 240 150 C 340 110, 340 90, 340 90" stroke="#EF4444" stroke-width="3" stroke-dasharray="8 8" />
+                    <text x="30" y="295" class="text-xs fill-gray-500 font-bold">Retailer</text>
+                    <text x="125" y="295" class="text-xs fill-gray-500 font-bold">Wholesaler</text>
+                    <text x="220" y="295" class="text-xs fill-gray-500 font-bold">Distributor</text>
+                    <text x="315" y="295" class="text-xs fill-gray-500 font-bold">Manufacturer</text>
+                    <text x="180" y="50" class="text-sm fill-red-500 font-bold">Variance Amplification</text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="card p-6 border-l-4 border-blue-500">
+                <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Bullwhip Ratio (Manuf.)</h3>
+                <div class="mt-2 flex items-baseline">
+                    <span class="text-3xl font-bold text-gray-900">3.2</span>
+                    <span class="ml-2 text-sm font-medium text-red-600">High Distortion</span>
+                </div>
+                <p class="mt-1 text-xs text-gray-500">Target: < 1.0</p>
+            </div>
+            <div class="card p-6 border-l-4 border-green-500">
+                <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Model Accuracy (R²)</h3>
+                <div class="mt-2 flex items-baseline">
+                    <span class="text-3xl font-bold text-gray-900">0.89</span>
+                    <span class="ml-2 text-sm font-medium text-green-600">Excellent</span>
+                </div>
+                <p class="mt-1 text-xs text-gray-500">XGBoost on Test Set</p>
+            </div>
+            <div class="card p-6 border-l-4 border-indigo-500">
+                <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wider">Top Predictor</h3>
+                <div class="mt-2 flex items-baseline">
+                    <span class="text-2xl font-bold text-gray-900">Demand Lag 1</span>
+                </div>
+                <p class="mt-1 text-xs text-gray-500">Based on SHAP Analysis</p>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div id="dashboard" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <!-- Chart 1: Quantification -->
+            <div class="card p-6">
+                <h2 class="text-lg font-bold text-gray-900 mb-4">Phase 1: Quantifying the Problem</h2>
+                <p class="text-sm text-gray-500 mb-4">Variance amplification increases significantly as we move upstream.</p>
+                <div class="relative h-64">
+                    <canvas id="ratioChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Mitigation -->
+            <div class="card p-6">
+                <h2 class="text-lg font-bold text-gray-900 mb-4">Phase 2: Mitigation Strategy</h2>
+                <p class="text-sm text-gray-500 mb-4">XGBoost (Green) smooths the erratic "Actual Orders" (Blue) signal.</p>
+                <div class="relative h-64">
+                    <canvas id="forecastChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Project Analysis Text Section -->
+        <div id="analysis" class="mb-12">
+            <div class="bg-white shadow sm:rounded-lg overflow-hidden">
+                 <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Project Analysis</h3>
+                    <p class="mt-1 max-w-2xl text-sm text-gray-500">Executive Summary & Conclusions</p>
+                </div>
+                <div class="p-6 space-y-6">
+                    <div>
+                        <h4 class="text-md font-bold text-gray-900">Abstract</h4>
+                        <p class="mt-2 text-gray-600 text-sm leading-relaxed">
+                            The "bullwhip effect" represents a critical systemic failure in modern supply chain management, where minor fluctuations in downstream customer demand ripple upstream, causing amplified variance in orders at the manufacturer level. This project documents the quantification of this phenomenon using a multi-tier dataset and the subsequent development of machine learning models (XGBoost and Random Forest) to mitigate it. By utilizing <code>statsmodels</code> for seasonal decomposition and engineering lag features for predictive modeling, we successfully built an XGBoost forecasting engine. The model results demonstrate that replacing naive moving averages with data-driven predictive algorithms can smooth ordering patterns, thereby reducing the operational volatility that characterizes the bullwhip effect.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-md font-bold text-gray-900">Conclusion & Future Work</h4>
+                        <p class="mt-2 text-gray-600 text-sm leading-relaxed">
+                            This project successfully quantified the bullwhip effect, proving that order variance amplifies by a factor of 3.0 from Retailer to Manufacturer. Furthermore, we demonstrated that Machine Learning offers a viable solution. By training an XGBoost regressor on decomposed seasonal data and lag features, we created a forecast that is accurate and stable. Implementing this model would allow supply chain managers to move away from "gut feeling" and toward a data-driven ordering policy, directly reducing carrying costs and stockout risks.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visual Simulation -->
+        <div id="simulation" class="card p-6 mb-12 bg-gray-900 text-white">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-white">Visualizing the "Whip"</h2>
+                    <p class="text-sm text-gray-400">Move your mouse horizontally over the box below to simulate consumer demand.</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs bg-blue-600 px-2 py-1 rounded">Interactive</span>
+                </div>
+            </div>
+            <div class="relative w-full h-64 bg-gray-800 rounded-lg overflow-hidden cursor-crosshair" id="canvasContainer">
+                <canvas id="whipCanvas"></canvas>
+            </div>
+        </div>
+
+        <!-- Methodology Section -->
+        <div id="methodology" class="bg-white shadow sm:rounded-lg overflow-hidden">
+            <div class="px-4 py-5 sm:px-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Methodology Overview</h3>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">From raw data to predictive engine.</p>
+            </div>
+            <div class="border-t border-gray-200">
+                <dl>
+                    <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Data Source</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">bullwhip_effect_dataset.csv (Multi-tier Supply Chain Data)</dd>
+                    </div>
+                    <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Feature Engineering</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <ul class="list-disc pl-5">
+                                <li>Lag Features (t-1, t-2, t-3) to capture immediate history.</li>
+                                <li>Rolling Means (Window=4) to smooth noise.</li>
+                                <li>Seasonal Decomposition (Period=52) to isolate trends.</li>
+                            </ul>
+                        </dd>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">Model Architecture</dt>
+                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                            <strong>XGBoost Regressor:</strong> 1000 estimators, 0.05 learning rate.<br>
+                            Selected for its ability to handle non-linear relationships better than ARIMA or Linear Regression.
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm text-gray-400">
+                &copy; 2025 Supply Chain Analytics Capstone. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // --- CHART 1: Bullwhip Ratio ---
+        const ctxRatio = document.getElementById('ratioChart').getContext('2d');
+        new Chart(ctxRatio, {
+            type: 'bar',
+            data: {
+                labels: ['Retailer', 'Wholesaler', 'Distributor', 'Manufacturer'],
+                datasets: [{
+                    label: 'Bullwhip Ratio (Var Orders / Var Demand)',
+                    data: [1.1, 1.5, 2.3, 3.2],
+                    backgroundColor: [
+                        'rgba(34, 197, 94, 0.6)', // Green
+                        'rgba(234, 179, 8, 0.6)', // Yellow
+                        'rgba(249, 115, 22, 0.6)', // Orange
+                        'rgba(239, 68, 68, 0.6)'  // Red
+                    ],
+                    borderColor: [
+                        'rgb(34, 197, 94)',
+                        'rgb(234, 179, 8)',
+                        'rgb(249, 115, 22)',
+                        'rgb(239, 68, 68)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Ratio' }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 2: Forecast Comparison ---
+        // Generating mock data to represent the report's findings
+        const weeks = Array.from({length: 20}, (_, i) => `Week ${i+1}`);
+        const actualOrders = [500, 520, 480, 600, 800, 750, 400, 300, 450, 500, 550, 600, 900, 850, 500, 400, 450, 520, 580, 600];
+        // XGBoost is "smoother" and less reactive to noise
+        const xgboostForecast = [510, 515, 520, 580, 700, 720, 500, 400, 460, 510, 540, 620, 800, 810, 550, 450, 460, 510, 560, 590];
+
+        const ctxForecast = document.getElementById('forecastChart').getContext('2d');
+        new Chart(ctxForecast, {
+            type: 'line',
+            data: {
+                labels: weeks,
+                datasets: [
+                    {
+                        label: 'Actual Orders (Volatile)',
+                        data: actualOrders,
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.1,
+                        fill: false
+                    },
+                    {
+                        label: 'XGBoost Prediction (Smoothed)',
+                        data: xgboostForecast,
+                        borderColor: 'rgb(34, 197, 94)',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                scales: {
+                    y: {
+                        title: { display: true, text: 'Order Quantity' }
+                    }
+                }
+            }
+        });
+
+        // --- ANIMATION: The Whip Simulation ---
+        const canvas = document.getElementById('whipCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+
+        // Resize canvas
+        function resize() {
+            const parent = document.getElementById('canvasContainer');
+            width = parent.clientWidth;
+            height = parent.clientHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Simulation State
+        let mouseX = width / 2;
+        // Nodes in the chain [Consumer, Retailer, Wholesaler, Distributor, Manufacturer]
+        // Each node tracks Y position and Velocity
+        const nodes = Array.from({length: 5}, () => ({y: height/2, vy: 0}));
+        const colors = ['#ffffff', '#93C5FD', '#60A5FA', '#3B82F6', '#EF4444'];
+        const labels = ['Consumer', 'Retailer', 'Wholesaler', 'Distributor', 'Manufacturer'];
+        
+        // Mouse listener
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            // Map mouse X to a target Y amplitude (up/down)
+            const x = e.clientX - rect.left;
+            // Normalize -1 to 1 based on width
+            const norm = (x / width) * 2 - 1; 
+            // Target Y is center + offset
+            targetY = (height/2) + (norm * 50); 
+        });
+
+        let targetY = height / 2;
+        let time = 0;
+
+        function animate() {
+            ctx.fillStyle = '#111827';
+            ctx.fillRect(0, 0, width, height);
+
+            // Update Physics
+            // Node 0 follows target (Mouse)
+            // Node i follows Node i-1 with "amplification" (spring physics)
+            
+            // Consumer (Node 0) moves smoothly to target
+            nodes[0].y += (targetY - nodes[0].y) * 0.1;
+
+            for(let i = 1; i < nodes.length; i++) {
+                const prev = nodes[i-1];
+                const curr = nodes[i];
+
+                // Spring force: pull current towards previous
+                const force = (prev.y - curr.y) * 0.05;
+                // Add "Panic" factor (Bullwhip): Amplification increases with index
+                const panic = force * (1 + (i * 0.5)); 
+                
+                curr.vy += panic;
+                curr.vy *= 0.9; // Damping/Friction
+                curr.y += curr.vy;
+            }
+
+            // Draw Connection Line
+            ctx.beginPath();
+            ctx.moveTo(width * 0.1, nodes[0].y);
+            for(let i = 1; i < nodes.length; i++) {
+                ctx.lineTo(width * (0.1 + i * 0.2), nodes[i].y);
+            }
+            ctx.strokeStyle = '#4B5563';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // Draw Nodes
+            for(let i = 0; i < nodes.length; i++) {
+                const x = width * (0.1 + i * 0.2);
+                const y = nodes[i].y;
+                
+                // Circle
+                ctx.beginPath();
+                ctx.arc(x, y, 12 + (i*2), 0, Math.PI * 2);
+                ctx.fillStyle = colors[i];
+                ctx.fill();
+                
+                // Label
+                ctx.fillStyle = '#9CA3AF';
+                ctx.font = '12px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText(labels[i], x, y + 40);
+            }
+
+            // Auto-oscillate if no mouse movement detected for a while? 
+            // For now, just let it sit or respond to mouse.
+            // Let's add a subtle sine wave to targetY if mouse is idle to show life
+            time += 0.05;
+            
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+    </script>
+</body>
+</html>
