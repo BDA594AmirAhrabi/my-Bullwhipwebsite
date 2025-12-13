@@ -260,7 +260,7 @@
                         Two regression models were trained to predict <code>Order_Quantity</code>. To determine the best approach for smoothing volatility, we conducted a comparative analysis between <strong>Random Forest</strong> (a bagging ensemble) and <strong>XGBoost</strong> (a gradient boosting framework).
                     </p>
                     <ul class="list-disc pl-8 mb-4">
-                        <li><strong>Model A (XGBoost):</strong> Utilized Gradient Boosting with 1000 estimators and a learning rate of 0.05. We prioritized XGBoost because of its ability to be "less aggressive" through regularization ($L1$ and $L2$ penalties), forcing the model to learn slowly and focus on the underlying trend rather than chasing high-frequency noise.</li>
+                        <li><strong>Model A (XGBoost):</strong> Utilized Gradient Boosting with 1000 estimators and a learning rate of 0.05. We prioritized XGBoost because of its ability to be "less aggressive" through regularization (L1 and L2 penalties), forcing the model to learn slowly and focus on the underlying trend rather than chasing high-frequency noise.</li>
                         <li><strong>Model B (Random Forest):</strong> Utilized Bagging with 100 estimators. While robust, this model acts as a "parallel" learner that averages out many fully grown trees, which can sometimes lead to predictions that are still too reactive to input noise.</li>
                     </ul>
                 </section>
@@ -285,7 +285,7 @@
 
                     <h4 class="text-xl font-bold text-gray-800 mb-3 report-header">4.3 Model Performance</h4>
                     <p class="mb-4">
-                        We evaluated both models on a hold-out test set comprising the final 20% of the timeline. Performance was measured using R-Squared ($R^2$) and Root Mean Square Error (RMSE).
+                        We evaluated both models on a hold-out test set comprising the final 20% of the timeline. Performance was measured using R-Squared (R^2) and Root Mean Square Error (RMSE).
                     </p>
 
                     <!-- Performance Table -->
@@ -349,7 +349,7 @@
                     <h3 class="text-2xl font-bold text-gray-900 mb-4 report-header">5. Conclusion & Limitations</h3>
                     <h4 class="text-lg font-bold text-gray-800 mb-2">5.1 Conclusion</h4>
                     <p class="mb-4">
-                        This project successfully quantified the bullwhip effect and demonstrated that Machine Learning offers a viable solution. By training an XGBoost regressor on decomposed seasonal data, we created a forecast that is accurate ($R^2 = 0.89$) and stable. Implementing this model allows supply chain managers to move away from "gut feeling" and toward a data-driven ordering policy.
+                        This project successfully quantified the bullwhip effect and demonstrated that Machine Learning offers a viable solution. By training an XGBoost regressor on decomposed seasonal data, we created a forecast that is accurate (R^2 = 0.89) and stable. Implementing this model allows supply chain managers to move away from "gut feeling" and toward a data-driven ordering policy.
                     </p>
                     <h4 class="text-lg font-bold text-gray-800 mb-2">5.2 Limitations</h4>
                     <p>
@@ -450,7 +450,7 @@
     <footer class="bg-white border-t border-gray-200 mt-12">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
             <p class="text-center text-sm text-gray-400">
-                &copy; 2025 Supply Chain Analytics  . Built with TailWind CSS & Chart.js.
+                &copy; 2025 Supply Chain Analytics BullWhip. By Amir Ahrabi Dec 2025.
             </p>
         </div>
     </footer>
